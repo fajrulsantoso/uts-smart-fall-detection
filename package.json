@@ -7,16 +7,16 @@
     "url": "https://github.com/Kiranism"
   },
   "scripts": {
-    "dev": "node scripts/postinstall.js 2>/dev/null; next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "oxlint",
-    "lint:fix": "oxlint --fix && bun format",
-    "lint:strict": "oxlint --deny-warnings",
-    "format": "oxfmt --write .",
-    "format:check": "oxfmt --check .",
-    "prepare": "husky"
-  },
+  "dev": "next dev",
+  "build": "next build",
+  "start": "next start",
+  "lint": "oxlint",
+  "lint:fix": "oxlint --fix && bun format",
+  "lint:strict": "oxlint --deny-warnings",
+  "format": "oxfmt --write .",
+  "format:check": "oxfmt --check .",
+  "prepare": "husky"
+},
   "dependencies": {
     "@clerk/nextjs": "^6.39.1",
     "@clerk/themes": "^2.4.57",
@@ -65,6 +65,7 @@
     "date-fns": "^4.1.0",
     "input-otp": "^1.4.2",
     "kbar": "^0.1.0-beta.48",
+    "lucide-react": "^1.8.0",
     "match-sorter": "^8.2.0",
     "motion": "^11.18.2",
     "next": "16.2.1",
