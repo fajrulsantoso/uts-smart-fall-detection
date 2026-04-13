@@ -1,6 +1,7 @@
-import { buttonVariants } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
-import { SignUp as ClerkSignUpForm } from '@clerk/nextjs';
+'use client';
+
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
 import { GitHubLogoIcon } from '@radix-ui/react-icons';
 import { Icons } from '@/components/icons';
 import { Metadata } from 'next';
@@ -13,14 +14,32 @@ export const metadata: Metadata = {
 };
 
 export default function SignUpViewPage({ stars }: { stars: number }) {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [isSignedUp, setIsSignedUp] = useState(false);
+
+  const handleSignUp = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!email || !password) {
+      setError('Please fill in both email and password');
+      return;
+    }
+
+    // Simulasi proses signup menggunakan localStorage
+    const user = { email, password };
+    localStorage.setItem('user', JSON.stringify(user));
+    setIsSignedUp(true);
+    // Redirect ke dashboard atau halaman setelah signup
+    window.location.href = '/dashboard/overview';
+  };
+
   return (
     <div className='relative h-screen flex-col items-center justify-center md:grid lg:max-w-none lg:grid-cols-2 lg:px-0'>
       <Link
         href='/examples/authentication'
-        className={cn(
-          buttonVariants({ variant: 'ghost' }),
-          'absolute top-4 right-4 hidden md:top-8 md:right-8'
-        )}
+        className='absolute top-4 right-4 hidden md:top-8 md:right-8 bg-transparent border-2 border-gray-500 rounded-lg px-4 py-2 text-gray-700 hover:bg-gray-200'
       >
         Sign Up
       </Link>
@@ -41,12 +60,7 @@ export default function SignUpViewPage({ stars }: { stars: number }) {
           </svg>
           Logo
         </div>
-        <InteractiveGridPattern
-          className={cn(
-            'mask-[radial-gradient(400px_circle_at_center,white,transparent)]',
-            'inset-x-0 inset-y-[0%] h-full skew-y-12'
-          )}
-        />
+        <InteractiveGridPattern className='mask-[radial-gradient(400px_circle_at_center,white,transparent)] inset-x-0 inset-y-[0%] h-full skew-y-12' />
         <div className='text-sidebar-foreground relative z-20 mt-auto'>
           <blockquote className='space-y-2'>
             <p className='text-lg'>
@@ -61,9 +75,9 @@ export default function SignUpViewPage({ stars }: { stars: number }) {
         <div className='flex w-full max-w-md flex-col items-center justify-center space-y-6'>
           {/* github link  */}
           <Link
-            className={cn('group inline-flex hover:text-yellow-200')}
+            className='group inline-flex hover:text-yellow-200'
             target='_blank'
-            href={'https://github.com/kiranism/next-shadcn-dashboard-starter'}
+            href='https://github.com/kiranism/next-shadcn-dashboard-starter'
           >
             <div className='flex items-center'>
               <GitHubLogoIcon className='size-4' />
@@ -77,18 +91,54 @@ export default function SignUpViewPage({ stars }: { stars: number }) {
               <span className='font-display font-medium'>{stars}</span>
             </div>
           </Link>
-          <ClerkSignUpForm
-            initialValues={{
-              emailAddress: 'your_mail+clerk_test@example.com'
-            }}
-          />
+          <form onSubmit={handleSignUp} className='space-y-6 w-full'>
+            <div>
+              <label htmlFor='email' className='block text-sm font-medium text-gray-700'>
+                Email Address
+              </label>
+              <input
+                id='email'
+                type='email'
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                className='mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg'
+                placeholder='your_email@example.com'
+              />
+            </div>
+            <div>
+              <label htmlFor='password' className='block text-sm font-medium text-gray-700'>
+                Password
+              </label>
+              <input
+                id='password'
+                type='password'
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                className='mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg'
+                placeholder='••••••••'
+              />
+            </div>
+
+            {/* Display error message if signup fails */}
+            {error && <div className='text-red-600 text-sm'>{error}</div>}
+
+            <Button
+              type='submit'
+              className='w-full py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700'
+            >
+              Sign Up
+            </Button>
+          </form>
+
           <div className='text-muted-foreground space-y-2 px-8 text-center text-xs'>
             <p>
               This is an{' '}
               <Link href='/about' className='hover:text-primary underline underline-offset-4'>
                 open-source project
               </Link>{' '}
-              for demo purposes. Authentication is handled securely by Clerk.
+              for demo purposes.
             </p>
             <p>
               <Link
@@ -100,6 +150,7 @@ export default function SignUpViewPage({ stars }: { stars: number }) {
               </Link>
             </p>
           </div>
+
           <p className='text-muted-foreground px-8 text-center text-sm'>
             By clicking continue, you agree to our{' '}
             <Link

@@ -1,7 +1,9 @@
-import { buttonVariants } from '@/components/ui/button';
+'use client';
+
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
 import { GitHubStarsButton } from '@/components/github-stars-button';
 import { cn } from '@/lib/utils';
-import { SignIn as ClerkSignInForm } from '@clerk/nextjs';
 import { Metadata } from 'next';
 import Link from 'next/link';
 import { InteractiveGridPattern } from './interactive-grid';
@@ -12,12 +14,31 @@ export const metadata: Metadata = {
 };
 
 export default function SignInViewPage() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    // Simulasi login menggunakan localStorage
+    if (email && password) {
+      localStorage.setItem('user', JSON.stringify({ email }));
+      setIsLoggedIn(true);
+      // Redirect ke halaman dashboard atau home setelah login sukses
+      window.location.href = '/dashboard/overview';
+    } else {
+      setError('Please enter a valid email and password');
+    }
+  };
+
   return (
     <div className='relative flex min-h-screen flex-col items-center justify-center overflow-hidden md:grid lg:max-w-none lg:grid-cols-2 lg:px-0'>
       <Link
         href='/examples/authentication'
         className={cn(
-          buttonVariants({ variant: 'ghost' }),
+          'bg-transparent border-2 border-gray-500 rounded-lg px-4 py-2 text-gray-700 hover:bg-gray-200',
           'absolute top-4 right-4 hidden md:top-8 md:right-8'
         )}
       >
@@ -66,18 +87,54 @@ export default function SignInViewPage() {
             variant='outline'
             size='default'
           />
-          <ClerkSignInForm
-            initialValues={{
-              emailAddress: 'your_mail+clerk_test@example.com'
-            }}
-          />
+          <form onSubmit={handleLogin} className='space-y-6 w-full'>
+            <div>
+              <label htmlFor='email' className='block text-sm font-medium text-gray-700'>
+                Email Address
+              </label>
+              <input
+                id='email'
+                type='email'
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                className='mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg'
+                placeholder='your_email@example.com'
+              />
+            </div>
+            <div>
+              <label htmlFor='password' className='block text-sm font-medium text-gray-700'>
+                Password
+              </label>
+              <input
+                id='password'
+                type='password'
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                className='mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg'
+                placeholder='••••••••'
+              />
+            </div>
+
+            {/* Display error message if login fails */}
+            {error && <div className='text-red-600 text-sm'>{error}</div>}
+
+            <Button
+              type='submit'
+              className='w-full py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700'
+            >
+              Sign In
+            </Button>
+          </form>
+
           <div className='text-muted-foreground space-y-2 px-8 text-center text-xs'>
             <p>
               This is an{' '}
               <Link href='/about' className='hover:text-primary underline underline-offset-4'>
                 open-source project
               </Link>{' '}
-              for demo purposes. Authentication is handled securely by Clerk.
+              for demo purposes.
             </p>
             <p>
               <Link
