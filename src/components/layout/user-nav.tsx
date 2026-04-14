@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -14,9 +15,15 @@ import { UserAvatarProfile } from '@/components/user-avatar-profile';
 import { useRouter } from 'next/navigation';
 
 export function UserNav() {
-  // Simulasi pengguna yang login dengan localStorage
-  const user = JSON.parse(localStorage.getItem('user') || '{}');
+  const [user, setUser] = useState<any>(null);
   const router = useRouter();
+
+  useEffect(() => {
+    const stored = localStorage.getItem('user');
+    if (stored) {
+      setUser(JSON.parse(stored));
+    }
+  }, []);
 
   if (user?.fullName) {
     return (
@@ -41,14 +48,11 @@ export function UserNav() {
             <DropdownMenuItem onClick={() => router.push('/dashboard/billing')}>
               Billing
             </DropdownMenuItem>
-            <DropdownMenuItem>Settings</DropdownMenuItem>
-            <DropdownMenuItem>New Team</DropdownMenuItem>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
           <DropdownMenuItem>
             <Button
               onClick={() => {
-                // Simulasi logout dengan menghapus user dari localStorage
                 localStorage.removeItem('user');
                 router.push('/auth/sign-in');
               }}

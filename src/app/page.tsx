@@ -1,14 +1,20 @@
-import { redirect } from 'next/navigation';
+'use client';
 
-export default async function Page() {
-  // Memeriksa apakah ada informasi pengguna yang disimpan di local storage atau cookie
-  const userId = localStorage.getItem('userId'); // Misalnya userId disimpan di localStorage
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
-  if (!userId) {
-    // Jika tidak ada userId, arahkan ke halaman login
-    return redirect('/auth/sign-in');
-  } else {
-    // Jika userId ditemukan, arahkan ke dashboard
-    redirect('/dashboard/overview');
-  }
+export default function Page() {
+  const router = useRouter();
+
+  useEffect(() => {
+    const userId = localStorage.getItem('userId');
+
+    if (!userId) {
+      router.push('/auth/sign-in');
+    } else {
+      router.push('/dashboard/overview');
+    }
+  }, [router]);
+
+  return null;
 }

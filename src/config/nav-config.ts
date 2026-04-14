@@ -42,15 +42,15 @@ export const navGroups: NavGroup[] = [
         icon: 'dashboard',
         isActive: false,
         items: []
-      }
+      },
 
-      // {
-      //   title: 'Device',
-      //   url: '/dashboard/device',
-      //   icon: 'settings',
-      //   isActive: false,
-      //   items: []
-      // },
+      {
+        title: 'Device',
+        url: '/dashboard/device',
+        icon: 'settings',
+        isActive: false,
+        items: []
+      }
 
       // {
       //   title: 'Admin', // 🔥 baru

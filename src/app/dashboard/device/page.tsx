@@ -1,157 +1,120 @@
 'use client';
 
 import { useState } from 'react';
-import { Card, CardContent } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Cpu, Link2, Loader } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 
-export default function DevicePage() {
-  const [serial, setSerial] = useState('');
-  const [connected, setConnected] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [isLogin, setIsLogin] = useState(true); // Switch between login and register
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+const BroadcastNews = () => {
+  const [title, setTitle] = useState('');
+  const [message, setMessage] = useState('');
+  const [scheduledTime, setScheduledTime] = useState('');
+  const [announcementStatus, setAnnouncementStatus] = useState('');
 
-  const handleConnect = async () => {
-    if (!serial) {
-      setError('Masukkan Serial Number!');
+  const handleSendAnnouncement = () => {
+    if (!title || !message) {
+      setAnnouncementStatus('Judul dan pesan pengumuman harus diisi!');
       return;
     }
 
-    setLoading(true);
-    setError(''); // Reset error message
-
-    // Simulasi koneksi perangkat (gunakan API nyata jika ada)
+    // Simulasikan pengiriman pengumuman
     setTimeout(() => {
-      setLoading(false);
-      setConnected(true); // Simulasi keberhasilan
-    }, 1500);
-  };
-
-  const handleAuth = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (isLogin) {
-      // Proses Login (simulasi)
-      console.log('Logging in with', email, password);
-      // Redirect ke Dashboard setelah login (disesuaikan)
-    } else {
-      // Proses Register (simulasi)
-      console.log('Registering with', email, password, serial);
-      // Register dan koneksi device di backend
-    }
+      setAnnouncementStatus('Pengumuman berhasil dikirim!');
+    }, 2000);
   };
 
   return (
-    <div className='p-6 md:p-10 max-w-4xl mx-auto space-y-8'>
-      {/* HEADER */}
-      <div className='space-y-2 text-center'>
-        <h1 className='text-3xl font-extrabold text-gray-800'>
-          {isLogin ? 'Login' : 'Register'} - Device Pairing
-        </h1>
-        <p className='text-gray-600 text-lg'>
-          {isLogin
-            ? 'Masuk ke akun Anda untuk menghubungkan perangkat'
-            : 'Buat akun baru dan hubungkan perangkat Smart Fall Detection'}
-        </p>
-      </div>
-
-      {/* CARD */}
-      <Card className='shadow-md border rounded-xl'>
-        <CardContent className='p-8 space-y-6'>
-          {/* FORM */}
-          <form onSubmit={handleAuth} className='space-y-4'>
-            {/* Email Input */}
+    <div className='space-y-10 p-8 md:p-12'>
+      {/* Form Pengumuman */}
+      <Card className='shadow-xl rounded-xl'>
+        <CardHeader>
+          <CardTitle>Buat Pengumuman</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className='space-y-6'>
+            {/* Judul Pengumuman */}
             <div className='space-y-2'>
-              <label className='text-sm font-medium text-gray-800'>Email</label>
+              <label htmlFor='title' className='text-sm font-medium text-gray-700'>
+                Judul Pengumuman
+              </label>
               <Input
-                placeholder='Email'
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
+                id='title'
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder='Masukkan judul pengumuman'
+                className='w-full p-3 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500'
               />
             </div>
 
-            {/* Password Input */}
+            {/* Pesan Pengumuman */}
             <div className='space-y-2'>
-              <label className='text-sm font-medium text-gray-800'>Password</label>
-              <Input
-                type='password'
-                placeholder='Password'
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
+              <label htmlFor='message' className='text-sm font-medium text-gray-700'>
+                Pesan Pengumuman
+              </label>
+              <Textarea
+                id='message'
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                placeholder='Masukkan isi pengumuman'
+                rows={5}
+                className='w-full p-3 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500'
               />
             </div>
 
-            {!isLogin && (
-              <div className='space-y-2'>
-                <label className='text-sm font-medium text-gray-800'>Serial Number ESP32</label>
-                <Input
-                  placeholder='Contoh: ESP32-ABC-123'
-                  value={serial}
-                  onChange={(e) => setSerial(e.target.value)}
-                  required
-                />
-              </div>
-            )}
+            {/* Waktu Pengiriman */}
+            <div className='space-y-2'>
+              <label htmlFor='scheduledTime' className='text-sm font-medium text-gray-700'>
+                Waktu Pengiriman
+              </label>
+              <Input
+                id='scheduledTime'
+                type='datetime-local'
+                value={scheduledTime}
+                onChange={(e) => setScheduledTime(e.target.value)}
+                className='w-full p-3 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500'
+              />
+            </div>
 
-            {/* Submit Button */}
+            {/* Tombol Kirim Pengumuman */}
             <Button
-              className='w-full py-3 bg-blue-600 text-white hover:bg-blue-700'
-              type='submit'
-              disabled={loading}
+              onClick={handleSendAnnouncement}
+              className='w-full mt-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-200'
             >
-              {loading ? <Loader className='animate-spin' size={16} /> : <Link2 size={16} />}
-              {loading ? 'Processing...' : isLogin ? 'Login' : 'Register'}
+              Kirim Pengumuman
             </Button>
-          </form>
 
-          {/* ERROR MESSAGE */}
-          {error && (
-            <div className='mt-4 p-4 rounded-lg bg-red-50 border text-red-700'>
-              <Cpu className='inline-block mr-2' size={16} />
-              {error}
-            </div>
-          )}
-
-          {/* SUCCESS MESSAGE */}
-          {connected && !loading && (
-            <div className='mt-4 p-4 rounded-lg bg-green-50 border text-green-700'>
-              <Cpu className='inline-block mr-2' size={16} />
-              Device berhasil terhubung ke sistem
-            </div>
-          )}
-
-          {/* Switch Between Login/Register */}
-          <div className='text-center mt-4'>
-            {isLogin ? (
-              <p>
-                Don't have an account?{' '}
-                <button
-                  onClick={() => setIsLogin(false)}
-                  className='text-blue-500 hover:text-blue-700'
-                >
-                  Register here
-                </button>
-              </p>
-            ) : (
-              <p>
-                Already have an account?{' '}
-                <button
-                  onClick={() => setIsLogin(true)}
-                  className='text-blue-500 hover:text-blue-700'
-                >
-                  Login here
-                </button>
-              </p>
+            {/* Status Pengumuman */}
+            {announcementStatus && (
+              <p className='text-sm text-center mt-4 text-green-600'>{announcementStatus}</p>
             )}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Daftar Pengumuman Terkirim */}
+      <Card className='shadow-xl rounded-xl'>
+        <CardHeader>
+          <CardTitle>Pengumuman Terkirim</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className='space-y-4'>
+            {/* Daftar Pengumuman */}
+            <div className='space-y-2'>
+              <p className='font-semibold text-lg'>Pengumuman #1: Sistem Maintenance</p>
+              <p className='text-sm text-muted-foreground'>Tanggal Pengiriman: 2023-04-01 09:00</p>
+              <p className='text-xs text-muted-foreground'>Status: Sudah Dibaca</p>
+            </div>
+            <div className='space-y-2'>
+              <p className='font-semibold text-lg'>Pengumuman #2: Update Firmware</p>
+              <p className='text-sm text-muted-foreground'>Tanggal Pengiriman: 2023-04-02 12:00</p>
+              <p className='text-xs text-muted-foreground'>Status: Belum Dibaca</p>
+            </div>
           </div>
         </CardContent>
       </Card>
     </div>
   );
-}
+};
+
+export default BroadcastNews;
